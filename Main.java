@@ -1,7 +1,7 @@
 public class Main {
     public static void main(String[] args) throws Exception {
         // 1. Define a expressão de entrada que vamos traduzir
-        String input = "10*2+5"; 
+        String input = "10-8/2"; 
 
         // 2. Cria uma instância do nosso Parser, entregando a expressão a ele
         Parser p = new Parser(input.getBytes());

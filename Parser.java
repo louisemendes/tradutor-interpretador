@@ -37,16 +37,13 @@ public class Parser {
         }
     }
     
-    // O método expr() foi refeito para lidar com a sequência de operações (ex: 99-5+10).
-    // Ele implementa a regra: expr -> term (('+'|'-') term)*
-    // Isso significa que ele lê um termo, e depois, ENQUANTO encontrar um '+' ou '-',
-    // ele continua lendo os próximos termos e aplicando as operações.
+// O novo 'expr()'. Ele só se preocupa com SOMA e SUBTRAÇÃO.
     private void expr() {
-        // Toda expressão começa com um termo (um número).
+        // Ele não lida mais com números diretamente, ele chama term() para isso.
         term();
 
-        // Loop para lidar com as operações de soma e subtração que vêm depois.
-        while (lookahead.type == '+' || lookahead.type == '-' || lookahead.type == '*' || lookahead.type == '/') {
+        //O loop agora só reage a '+' e '-'.
+        while (lookahead.type == '+' || lookahead.type == '-') {
             int op = lookahead.type;
             match(op); // Consome o operador ('+' ou '-')
             term();    // Lê o próximo termo (o número depois do operador)
@@ -56,24 +53,36 @@ public class Parser {
                 System.out.println("add");
             } else if (op == '-') {
                 System.out.println("sub");
-            } else if (op == '*') {
-                System.out.println("mul");
-            } else if (op == '/') {
-                System.out.println("div");
             }
         }
     }
         
     
 
-    // O antigo método "digit()" agora é "term()", pois ele lida com um NÚMERO, não só um dígito.
-    // A função dele é garantir que a próxima coisa na expressão seja um número.
+    //O novo 'term()'. Ele só se preocupa com MULTIPLICAÇÃO e DIVISÃO.
     private void term() {
-        // Verifico se o token atual é do tipo NUM
+        // Ele chama factor() para pegar os números.
+        factor();
+
+        // O loop dele só reage a '*' e '/'.
+        while (lookahead.type == '*' || lookahead.type == '/') {
+            int op = lookahead.type;
+            match(op);
+            factor(); // Pede para o próximo fator ser resolvido.
+
+            if (op == '*') {
+                System.out.println("mul");
+            } else if (op == '/') {
+                System.out.println("div");
+            }
+        }
+    }
+
+    //O novo 'factor()'. Ele é o antigo 'term()'. Sua única função é lidar com NÚMEROS.
+    private void factor() {
         if (lookahead.type == Token.NUM) {
-            // Se for, emito o comando "push" com o VALOR do token, que agora pode ser > 9.
             System.out.println("push " + lookahead.value);
-            match(Token.NUM); // Finalizo a leitura desse número e avanço.
+            match(Token.NUM);
         } else {
             throw new Error("Erro de sintaxe: esperado um número, mas encontrei " + lookahead.type);
         }
