@@ -78,16 +78,28 @@ public class Parser {
         }
     }
 
-    // O método factor() foi atualizado para lidar com parênteses.
-    // Gramática: factor -> NUMBER | '(' expr ')'
+    // O método factor() foi atualizado para lidar com o MENOS UNÁRIO (números negativos)
+    // e também com parênteses.
+    // Gramática: factor -> ('-') factor | NUMBER | '(' expr ')'
     private void factor() {
 
+        //Verifica se o token é um sinal de menos.
+        if (lookahead.type == '-') {
+            // 1. Consome o token '-'
+            match('-');
+            // 2. Chama o próprio método 'factor' novamente para processar o que vem a seguir
+            //    (seja um número, como em "-5", ou uma expressão, como em "-(2+3)").
+            factor();
+            // 3. Emite um novo comando para negar o resultado da última operação.
+            System.out.println("neg");
+        }
+
         // Se o token for um número, acontece o que ja estava previsto antes.
-        if (lookahead.type == Token.NUM) {
+        else if (lookahead.type == Token.NUM) {
             System.out.println("push " + lookahead.value);
             match(Token.NUM);
         }
-            // NOVIDADE: se o token for um parêntese de abertura...
+        //se o token for um parêntese de abertura...
         else if (lookahead.type == '(') {
             // 1. Consome o '('
             match('(');
@@ -103,4 +115,6 @@ public class Parser {
             throw new Error("Erro de sintaxe: esperado um número, mas encontrei " + lookahead.type);
         }
     }
+
+    
 }
