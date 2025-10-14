@@ -78,12 +78,28 @@ public class Parser {
         }
     }
 
-    //O novo 'factor()'. Ele é o antigo 'term()'. Sua única função é lidar com NÚMEROS.
+    // O método factor() foi atualizado para lidar com parênteses.
+    // Gramática: factor -> NUMBER | '(' expr ')'
     private void factor() {
+
+        // Se o token for um número, acontece o que ja estava previsto antes.
         if (lookahead.type == Token.NUM) {
             System.out.println("push " + lookahead.value);
             match(Token.NUM);
-        } else {
+        }
+            // NOVIDADE: se o token for um parêntese de abertura...
+        else if (lookahead.type == '(') {
+            // 1. Consome o '('
+            match('(');
+            // 2. Chama o método principal 'expr()' para resolver TUDO que está dentro do parêntese.
+            //    Esta é a chamada recursiva que faz a mágica acontecer.
+            expr();
+            // 3. Ao final, exige que haja um parêntese de fechamento.
+            match(')');
+          } 
+        
+        // Se não for nem um número nem um '(', é um erro.
+         else {
             throw new Error("Erro de sintaxe: esperado um número, mas encontrei " + lookahead.type);
         }
     }

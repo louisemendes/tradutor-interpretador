@@ -63,6 +63,12 @@ public class Scanner {
             case '/':
                 advance();
                 return new Token('/', 0);
+            case '(':
+                advance();
+                return new Token('(', 0);
+            case ')':
+                advance();
+                return new Token(')', 0);
             // -----------------------------
         }
 
