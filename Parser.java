@@ -46,7 +46,7 @@ public class Parser {
         term();
 
         // Loop para lidar com as operações de soma e subtração que vêm depois.
-        while (lookahead.type == '+' || lookahead.type == '-') {
+        while (lookahead.type == '+' || lookahead.type == '-' || lookahead.type == '*' || lookahead.type == '/') {
             int op = lookahead.type;
             match(op); // Consome o operador ('+' ou '-')
             term();    // Lê o próximo termo (o número depois do operador)
@@ -56,9 +56,15 @@ public class Parser {
                 System.out.println("add");
             } else if (op == '-') {
                 System.out.println("sub");
+            } else if (op == '*') {
+                System.out.println("mul");
+            } else if (op == '/') {
+                System.out.println("div");
             }
         }
     }
+        
+    
 
     // O antigo método "digit()" agora é "term()", pois ele lida com um NÚMERO, não só um dígito.
     // A função dele é garantir que a próxima coisa na expressão seja um número.

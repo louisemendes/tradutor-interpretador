@@ -56,6 +56,14 @@ public class Scanner {
             case '-':
                 advance();
                 return new Token('-', 0);
+                 // --- Adicionar suporte à Multiplicação (*) e Divisão (/) ---
+            case '*':
+                advance();
+                return new Token('*', 0);
+            case '/':
+                advance();
+                return new Token('/', 0);
+            // -----------------------------
         }
 
         // Se o caractere for nulo ('\0'), sei que cheguei ao fim da entrada.
