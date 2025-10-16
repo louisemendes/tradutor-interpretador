@@ -1,14 +1,18 @@
+import java.util.ArrayList;
+import java.util.List;
+
 public class Parser {
 
-    // precisei mudar os atributos da classe para trabalhar com TOKENS, não mais com 'char'
-    private Scanner scanner;      // O Parser continua tendo um Scanner
-    private Token lookahead;      // Antigo 'currentToken', agora guarda um Token completo (tipo e valor)
+    private Scanner scanner;      
+    private Token lookahead;
+    private List<String> commands;      
 
     // O construtor agora inicializa o scanner e já pega o primeiro token para análise.
     // Isso prepara o "lookahead" para o método parse().
     public Parser(byte[] input) {
         this.scanner = new Scanner(input);
         this.lookahead = scanner.nextToken(); // Pega o primeiro token para começar
+        this.commands = new ArrayList<>();
     }
 
     // Método que consome o token atual e avança para o próximo.
@@ -27,14 +31,15 @@ public class Parser {
         }
     }
 
-    // O método parse() é o ponto de entrada, ele chama a regra inicial da gramática.
-    public void parse() {
+
+    public List<String> parse() {
         expr();
         // Depois de processar a expressão, verifico se cheguei ao fim do arquivo.
         // Se não, significa que há caracteres sobrando que não fazem parte da expressão.
         if (lookahead.type != Token.EOF) {
             throw new Error("Erro de sintaxe: caracteres inesperados no final da expressão.");
         }
+        return commands; 
     }
     
 // O novo 'expr()'. Ele só se preocupa com SOMA e SUBTRAÇÃO.
@@ -50,9 +55,9 @@ public class Parser {
 
             // Emite o comando pós-fixado correspondente à operação que encontramos.
             if (op == '+') {
-                System.out.println("add");
+                commands.add("add");
             } else if (op == '-') {
-                System.out.println("sub");
+                commands.add("sub");
             }
         }
     }
@@ -71,9 +76,9 @@ public class Parser {
             factor(); // Pede para o próximo fator ser resolvido.
 
             if (op == '*') {
-                System.out.println("mul");
+                commands.add("mul");
             } else if (op == '/') {
-                System.out.println("div");
+                commands.add("div");
             }
         }
     }
@@ -91,12 +96,12 @@ public class Parser {
             //    (seja um número, como em "-5", ou uma expressão, como em "-(2+3)").
             factor();
             // 3. Emite um novo comando para negar o resultado da última operação.
-            System.out.println("neg");
+            commands.add("neg");
         }
 
         // Se o token for um número, acontece o que ja estava previsto antes.
         else if (lookahead.type == Token.NUM) {
-            System.out.println("push " + lookahead.value);
+            commands.add("push " + lookahead.value);
             match(Token.NUM);
         }
         //se o token for um parêntese de abertura...
@@ -116,5 +121,5 @@ public class Parser {
         }
     }
 
-    
+
 }
